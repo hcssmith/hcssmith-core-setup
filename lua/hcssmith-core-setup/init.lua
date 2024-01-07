@@ -17,14 +17,20 @@ function M.setup(opts)
     TabWidth = 2,
     TextWidth = 80,
     Home = '/home/hcssmith',
+    WrapFiles = { '*.norg', '*.md' }
   }
 
   local group = vim.api.nvim_create_augroup('HcssmithCoreSetup', {})
 
+
+  default.__index = default
+
+  setmetatable(opts, default)
+
   vim.api.nvim_create_autocmd('BufEnter', {
     desc = 'Setup Lsp keybindings on buffer when LSP is attached',
     group = group,
-    pattern = { '*.norg', '*.md' },
+    pattern = opts.WrapFiles,
     ---@param ev AutoCmdEvent
     callback = function(ev)
       vim.bo[ev.buf].textwidth = opts.TextWidth
@@ -32,11 +38,6 @@ function M.setup(opts)
       vim.cmd.setlocal('wrap')
     end
   })
-
-  default.__index = default
-
-  setmetatable(opts, default)
-
 
   vim.o.termguicolors = true
   vim.cmd.colorscheme(opts.Theme)
