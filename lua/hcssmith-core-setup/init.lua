@@ -1,5 +1,14 @@
 local M = {}
 
+---@class AutoCmdEvent
+---@field buf number
+---@field event string
+---@field file string
+---@field group number
+---@field id number
+---@field match string
+
+
 function M.setup(opts)
   opts = opts or {}
 
@@ -9,6 +18,20 @@ function M.setup(opts)
     TextWidth = 80,
     Home = '/home/hcssmith',
   }
+
+  local group = vim.api.nvim_create_augroup('HcssmithCoreSetup', {})
+
+  vim.api.nvim_create_autocmd('LspAttach', {
+    desc = 'Setup Lsp keybindings on buffer when LSP is attached',
+    group = group,
+    pattern = { '*.norg', '*.md' },
+    ---@param ev AutoCmdEvent
+    callback = function(ev)
+      vim.bo[ev.buf].textwidth = opts.TextWidth
+      vim.bo[ev.buf].wrapmargin = opts.TextWidth
+      vim.cmd.setlocal('wrap')
+    end
+  })
 
   default.__index = default
 
@@ -27,9 +50,6 @@ function M.setup(opts)
   vim.opt.expandtab = true
 
   vim.opt.smartindent = true
-
-  vim.opt.wrap = true
-  vim.opt.textwidth = opts.TextWidth
 
   vim.opt.hlsearch = false
   vim.opt.incsearch = true
