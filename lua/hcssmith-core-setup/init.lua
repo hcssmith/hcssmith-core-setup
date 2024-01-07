@@ -21,7 +21,7 @@ function M.setup(opts)
 
   local group = vim.api.nvim_create_augroup('HcssmithCoreSetup', {})
 
-  vim.api.nvim_create_autocmd('LspAttach', {
+  vim.api.nvim_create_autocmd('BufEnter', {
     desc = 'Setup Lsp keybindings on buffer when LSP is attached',
     group = group,
     pattern = { '*.norg', '*.md' },
