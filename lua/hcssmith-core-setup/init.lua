@@ -17,7 +17,7 @@ function M.setup(opts)
     TabWidth = 2,
     TextWidth = 80,
     Home = '/home/hcssmith',
-    WrapFiles = { '*.norg', '*.md' }
+    WrapFiles = { '*.norg', '*.md', '*.tex', '*.nw' }
   }
 
   local group = vim.api.nvim_create_augroup('HcssmithCoreSetup', {})
@@ -36,6 +36,16 @@ function M.setup(opts)
       vim.bo[ev.buf].textwidth = opts.TextWidth
       vim.bo[ev.buf].wrapmargin = opts.TextWidth
       vim.cmd.setlocal('wrap')
+    end
+  })
+
+  vim.api.nvim_create_autocmd("BufEnter", {
+    desc = 'Set correct filetype on non standard files',
+    group = group,
+    pattern = { '*.nw' },
+    ---@param ev AutoCmdEvent
+    callback = function(ev)
+      vim.bo[ev.buf].filetype = "tex"
     end
   })
 
